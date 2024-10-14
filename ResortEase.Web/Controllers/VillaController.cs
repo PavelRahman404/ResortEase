@@ -38,5 +38,28 @@ namespace ResortEase.Web.Controllers
             }
             return View();
         }
+
+        public IActionResult Update(int villaId)
+        {
+            Villa? villa = _context.Villas.FirstOrDefault(u => u.Id == villaId);
+            if(villa == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(villa);
+        }
+
+        [HttpPost]
+        public IActionResult Update(Villa villa)
+        {
+            if (ModelState.IsValid && villa.Id >0)
+            {
+                _context.Villas.Update(villa);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
     }
 }
