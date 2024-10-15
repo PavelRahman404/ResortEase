@@ -34,6 +34,7 @@ namespace ResortEase.Web.Controllers
             {
                 _context.Villas.Add(villa);
                 _context.SaveChanges();
+                TempData["success"] = "The villa has been created successfully.";
                 return RedirectToAction("Index");
             }
             return View();
@@ -42,7 +43,7 @@ namespace ResortEase.Web.Controllers
         public IActionResult Update(int villaId)
         {
             Villa? villa = _context.Villas.FirstOrDefault(u => u.Id == villaId);
-            if(villa == null)
+            if(villa is null)
             {
                 return RedirectToAction("Error", "Home");
             }
@@ -52,14 +53,39 @@ namespace ResortEase.Web.Controllers
         [HttpPost]
         public IActionResult Update(Villa villa)
         {
-            if (ModelState.IsValid && villa.Id >0)
+            if (ModelState.IsValid && villa.Id > 0)
             {
                 _context.Villas.Update(villa);
                 _context.SaveChanges();
+                TempData["success"] = "The villa has been updated successfully.";
                 return RedirectToAction("Index");
             }
             return View();
         }
 
+        public IActionResult Delete(int villaId)
+        {
+            Villa? villa = _context.Villas.FirstOrDefault(u => u.Id == villaId);
+            if (villa is null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(villa);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Villa villa)
+        {
+            Villa? villaFromDb = _context.Villas.FirstOrDefault(u=>u.Id == villa.Id);
+            if (villaFromDb is not null)
+            {
+                _context.Villas.Remove(villaFromDb);
+                _context.SaveChanges();
+                TempData["success"] = "The villa has been deleted successfully.";
+                return RedirectToAction("Index");
+            }
+            TempData["error"] = "The villa could not be deleted.";
+            return View();
+        }
     }
 }
