@@ -18,4 +18,8 @@
     <ProjectReference Include="..\ResortEase.Infrastructure\ResortEase.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\Room Images\Villa\" />
+  </ItemGroup>
+
 </Project>

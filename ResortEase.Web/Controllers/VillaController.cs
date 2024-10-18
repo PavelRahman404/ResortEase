@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ResortEase.Application.Common.Interfaces;
 using ResortEase.Domain.Entities;
 using ResortEase.Infrastructure.Data;
 
@@ -6,15 +7,15 @@ namespace ResortEase.Web.Controllers
 {
     public class VillaController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public VillaController(ApplicationDbContext context)
+        public VillaController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            var villas = _context.Villas.ToList();
+            var villas = _unitOfWork.Villa.GetAll();
             return View(villas);
         }
 
@@ -32,8 +33,8 @@ namespace ResortEase.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Villas.Add(villa);
-                _context.SaveChanges();
+                _unitOfWork.Villa.Add(villa);
+                _unitOfWork.Save();
                 TempData["success"] = "The villa has been created successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -42,7 +43,7 @@ namespace ResortEase.Web.Controllers
 
         public IActionResult Update(int villaId)
         {
-            Villa? villa = _context.Villas.FirstOrDefault(u => u.Id == villaId);
+            Villa? villa = _unitOfWork.Villa.Get(u => u.Id == villaId);
             if(villa is null)
             {
                 return RedirectToAction("Error", "Home");
@@ -55,8 +56,8 @@ namespace ResortEase.Web.Controllers
         {
             if (ModelState.IsValid && villa.Id > 0)
             {
-                _context.Villas.Update(villa);
-                _context.SaveChanges();
+                _unitOfWork.Villa.Update(villa);
+                _unitOfWork.Save();
                 TempData["success"] = "The villa has been updated successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -65,7 +66,7 @@ namespace ResortEase.Web.Controllers
 
         public IActionResult Delete(int villaId)
         {
-            Villa? villa = _context.Villas.FirstOrDefault(u => u.Id == villaId);
+            Villa? villa = _unitOfWork.Villa.Get(u => u.Id == villaId);
             if (villa is null)
             {
                 return RedirectToAction("Error", "Home");
@@ -76,11 +77,11 @@ namespace ResortEase.Web.Controllers
         [HttpPost]
         public IActionResult Delete(Villa villa)
         {
-            Villa? villaFromDb = _context.Villas.FirstOrDefault(u=>u.Id == villa.Id);
+            Villa? villaFromDb = _unitOfWork.Villa.Get(u=>u.Id == villa.Id);
             if (villaFromDb is not null)
             {
-                _context.Villas.Remove(villaFromDb);
-                _context.SaveChanges();
+                _unitOfWork.Villa.Remove(villaFromDb);
+                _unitOfWork.Save();
                 TempData["success"] = "The villa has been deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }
