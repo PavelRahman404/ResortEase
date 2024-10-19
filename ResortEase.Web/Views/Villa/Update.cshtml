@@ -13,7 +13,6 @@
             <input asp-for="Id" hidden />
             <div class="col-10">
             <div class="p-3">
-                @*  <div asp-validation-summary="ModelOnly"></div> *@
                 <div class="form-floating py-1 col-12">
                     <input asp-for="Name" class="form-control border shadow" />
                     <label asp-for="Name" class="ms-2"></label>
@@ -70,7 +69,7 @@
             </div>
             </div>
             <div class="col-2">
-                <img src="@Model.ImageUrl" width="100%"
+                <img src="@Model.ImageUrl" class="img-fluid"
                      style="border-radius:5px; border:1px solid #bbb9b9" />
             </div>
         </form>

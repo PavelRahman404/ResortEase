@@ -13,12 +13,14 @@ namespace ResortEase.Infrastructure.Repository
         private readonly ApplicationDbContext _context;
 
         public IVillaRepository Villa {  get; private set; }
+        public IAmenityRepository Amenity {  get; private set; }
         public IVillaNumberRepository VillaNumber {  get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Villa = new VillaRepository(context);
+            Amenity = new AmenityRepository(context);
             VillaNumber = new VillaNumberRepository(context);
         }
 
